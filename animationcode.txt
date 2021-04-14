@@ -1,0 +1,66 @@
+#include <SFML/Graphics.hpp>
+
+using namespace sf;
+
+int main(int argc, char **argv)
+{
+	VideoMode vm(1920, 1080);
+	RenderWindow window(vm, "Zelda-Like", Style::Fullscreen);
+	Event event;
+	Texture textureBackground;
+	Texture texturePlayer;
+	textureBackground.loadFromFile("graphics/cavefull.png");
+	texturePlayer.loadFromFile("graphics/characteranim.png");
+	Sprite spriteBackground;
+	IntRect rightAnim(0, 28, 16, 38);
+	Sprite spritePlayer(texturePlayer, rightAnim);
+
+	spriteBackground.setTexture(textureBackground);
+	spriteBackground.setPosition(0, 0);
+	spriteBackground.setScale(3.8, 3.5);
+	spritePlayer.setScale(2, 2);
+	spritePlayer.setPosition(500, 400);
+
+	Clock clock;
+
+		while (window.isOpen())
+		{
+			
+			while (window.pollEvent(event))
+
+				if (event.type == Event::Closed)
+				{
+					window.close();
+				}
+
+			if (Keyboard::isKeyPressed(Keyboard::Key::Down))
+				spritePlayer.move(0, .25);
+			if (Keyboard::isKeyPressed(Keyboard::Key::Up))
+				spritePlayer.move(0, -.25);
+			if (Keyboard::isKeyPressed(Keyboard::Key::Left))
+				spritePlayer.move(-.25, 0);
+
+			if (Keyboard::isKeyPressed(Keyboard::Key::Right))
+				spritePlayer.move(.25, 0);
+			if (clock.getElapsedTime().asSeconds() > 0.5f)
+			{
+				if (rightAnim.left == 38)
+					rightAnim.left = 0;
+				else
+					rightAnim.left += 16;
+				spritePlayer.setTextureRect(rightAnim);
+				clock.restart();
+			}
+			
+			
+			window.clear();
+
+			window.draw(spriteBackground);
+			window.draw(spritePlayer);
+			window.display();
+
+
+		}
+
+	return 0;
+}
